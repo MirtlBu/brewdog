@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Brew Dog</title>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <style type="text/css">
+            li {
+                list-style: none;
+                display: flex;
+                border-bottom: 1px solid #ddd;
+                padding-top:10px;
+                padding-bottom: 10px;
+            }
+            .info {
+                flex: 1;
+                align-self: center;
+                padding-right: 20px;
+            }
+            .title {
+                font-size: 1.1em;
+                line-height: 1.5;
+            }
+            .description {
+                color: #333;
+            }
+            .img {
+                height: 100px;
+                align-self: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="beers"></div>
+
+        <script type="text/javascript">
+            const endpoint = 'https://api.punkapi.com/v2/beers/';
+            const beerBlock = document.querySelector('.beers');
+            if(localStorage.getItem("beers")) {
+                var beers = JSON.parse(localStorage.getItem("beers"));
+                const html = beers.map(beer => {
+                    return `<li>
+                        <div class="info">
+                            <div class="title">${beer.name} — ${beer.abv}%</div>
+                            <span class="description">${beer.description}</span>
+                        </div>
+                        <img class="img" src="${beer.image_url}"/>
+                    </li>`
+                }).join('');
+                beerBlock.innerHTML = html;
+            }
+            else{
+                fetch(endpoint)
+                    .then(blob => blob.json())
+                    .then(data => {
+                        localStorage.setItem("beers", JSON.stringify(data));
+                      })
+            }
+        </script>
+    </body>
+</html>
